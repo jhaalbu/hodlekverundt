@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+        <h1>Løyper</h1>
+        <div class="row">
+        {% for rute in ruter %}
+            <div class="col-md-4">
+                <div class="card mb-2">
+                    <img class="card-img-top" src="{% static rute.image %}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ rute.tittel }}</h5>
+                        <p class="card-text">{{ rute.skildring }}</p>
+                        <a href="{% url 'rute:rute_detail' rute.pk %}"
+                        class="btn btn-primary">
+                            Sjå detaljar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+
+        {% endblock %}

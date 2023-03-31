@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+<h1>{{ rute.tittel}}</h1>
+<div class="row">
+    <div class="col-md-8">
+        <img src="{% static rute.image %}" alt="" width="100%">
+    </div>
+    <div class="col-md-4">
+        <h5>Løypeinfo</h5>
+        <p>{{ rute.skildring }}</p>
+        <br>
+
+    </div>
+
+
+</div>
+</div>
+{% load static %}
+{% endblock %}
