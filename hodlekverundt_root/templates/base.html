@@ -1,42 +1,60 @@
+{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hodlekverundt</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <style>
-    .btn-primary {
-        background-color: red;
-     }
-     .bg-primary {
-        background-color: #778c6a !important;
-    }
-    </style>
-      <div class="container">
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 bg-primary border-bottom">
-          <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-            <span class="fs-4">Hodlekve rundt</span>
-          </a>
-    
-          <ul class="nav nav-pills">
-            <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Heim</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Info</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Trase</a></li>
-            <li class="nav-item"><a href="rute/" class="nav-link">Påmelding</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Resultater</a></li>
-          </ul>
-        </header>
-      </div>
-</head>
-
-<body>
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <link rel="shortcut icon" href="{%  static 'img/Final_hodlekverundt_Bare sau.png' %}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  
+    <div class="container">
+      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+          <svg class="bi me-2" width="40" height="32"><use xlink:href="img/Final_hodlekverundt_Bare sau.png"></use></svg>
+          <span class="fs-4">Hodlekve rundt</span>
+        </a>
+  
+        <ul class="nav nav-pills">
+          <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Heim</a></li>
+          <li class="nav-item"><a href="/info" class="nav-link">Info</a></li>
+          <li class="nav-item"><a href="/rute" class="nav-link">Trase</a></li>
+          <li class="nav-item"><a href="/paamelding" class="nav-link">Påmelding</a></li>
+          <li class="nav-item"><a href="#" class="nav-link">Resultater</a></li>
+        </ul>
+      </header>
+    </div>
+  </head>
+  <body>
     {% block content %}
 
     {% endblock %}    
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  </body>
+
+  <div class="container">
+  <footer class="py-4 border-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>Kontaktperson om løp og trase:</h5>
+          <p>Steinar Nes</p>
+          <p>steinarnes1@gmail.com</p>
+          <p>15 98 425</p>
+        </div>
+        <div class="col-md-4">
+          <h5>Kontaktperson for arrangemente</h5>
+          <p>Kamilla Marifjæren</p>
+          <p>daglegleiar@fjellsportfestivalen.no</p>
+          <p>975 79 347</p>
+        </div>
+        <div class="col-md-4">
+          <h5>Samarbeidspartnarar</h5>
+          <img src="static/img/sogndal_fjellsport.png" alt="Logo 1" class="img-fluid mb-2" style="max-width: 150px;">
+        </div>
+      </div>
+    </div>
+  </div>
+  </footer>
 </html>

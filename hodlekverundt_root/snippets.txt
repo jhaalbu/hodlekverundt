@@ -1,0 +1,249 @@
+https://github.com/Raruto/leaflet-elevation
+
+
+    <style>
+    .text-primary {
+        color: #b3c890 !important;
+    }
+    body {
+        background-color: ##a1a1a1 !important;
+    }
+
+    </style>
+
+
+Yes, you can achieve this functionality by combining Leaflet, Leaflet.Elevation plugin, and some custom JavaScript code. Here's a step-by-step guide on how to do it:
+
+Set up your HTML file with necessary dependencies:
+html
+Copy code
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Map with Elevation</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-elevation/1.6.7/Leaflet.Elevation.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-elevation/1.6.7/Leaflet.Elevation.min.js"></script>
+  
+  <style>
+    #map { height: 400px; }
+    #elevation { height: 200px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="elevation"></div>
+  <script src="main.js"></script>
+</body>
+</html>
+Create a main.js file with the following JavaScript code:
+javascript
+Copy code
+// Initialize the map
+const map = L.map('map').setView([51.505, -0.09], 13);
+
+// Add a tile layer to the map
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Create an elevation plot
+const elevation = L.control.elevation({
+  position: "bottomright",
+  theme: "steelblue-theme",
+  width: 600,
+  height: 200,
+  margins: {
+    top: 10,
+    right: 20,
+    bottom: 30,
+    left: 50
+  },
+  useHeightIndicator: false,
+  interpolate: false
+});
+elevation.addTo(map);
+
+// Load a GPX track and add it to the map
+const gpxUrl = 'path/to/your/gpx-file.gpx'; // Replace with your GPX file URL
+const gpxTrack = new L.GPX(gpxUrl, {
+  async: true
+}).on('loaded', function(e) {
+  map.fitBounds(e.target.getBounds());
+  elevation.loadGPX(e.target);
+});
+
+gpxTrack.addTo(map);
+
+// Create a marker for displaying the current position
+const currentPosMarker = L.marker([0, 0], {
+  icon: L.divIcon({
+    className: 'current-pos-icon',
+    html: '<i class="fas fa-map-marker-alt"></i>', // You can use any HTML content here
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+  draggable: false
+});
+
+// Update marker position on mouseover
+elevation.on('eledata_hover', function(e) {
+  const latlng = L.latLng(e.data.lat, e.data.lng);
+  currentPosMarker.setLatLng(latlng);
+  if (!map.hasLayer(currentPosMarker)) {
+    currentPosMarker.addTo(map);
+  }
+});
+
+// Remove marker on mouseout
+elevation.on('eledata_clear', function() {
+  if (map.hasLayer(currentPos
+
+
+
+Jan Helge Aalbu
+how can i integrate this in a django webapp? where i get the path to the gpx file trough a variable from django?
+To integrate the Leaflet map with elevation plot in a Django web app, you need to follow these steps:
+
+Create a Django view that passes the GPX file path to the template.
+In your Django views.py:
+
+python
+Copy code
+from django.shortcuts import render
+
+def leaflet_map(request):
+    gpx_file_path = '/path/to/your/gpx-file.gpx'  # Replace with the actual GPX file path
+    context = {'gpx_file_path': gpx_file_path}
+    return render(request, 'leaflet_map.html', context)
+Add a URL pattern for the view in your Django urls.py:
+python
+Copy code
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    # Your other URL patterns here
+    path('leaflet_map/', views.leaflet_map, name='leaflet_map'),
+]
+Create a template leaflet_map.html in your Django templates folder:
+html
+Copy code
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Map with Elevation</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-elevation/1.6.7/Leaflet.Elevation.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-elevation/1.6.7/Leaflet.Elevation.min.js"></script>
+  
+  <style>
+    #map { height: 400px; }
+    #elevation { height: 200px; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="elevation"></div>
+  <script>
+    // The GPX file path from Django view
+    const gpxUrl = '{{ gpx_file_path }}';
+
+    // Your JavaScript code from the previous example goes here
+  </script>
+</body>
+</html>
+Now, when you visit the URL /leaflet_map/ (or the URL you defined in your urls.py), the Leaflet map with elevation plot should be displayed with the GPX file path passed from the Django view.
+
+Make sure to replace /path/to/your/gpx-file.gpx with the actual path to your GPX file in your Django view. If the GPX file is stored in your Django static files, you can use os.path.join(settings.STATIC_ROOT, 'path/within/static/files.gpx') to get the file path.
+
+
+
+
+Jan Helge Aalbu
+it seems you didnt quite finish the code in the main.js file
+Apologies for that oversight. Here's the complete main.js file:
+
+javascript
+Copy code
+// Initialize the map
+const map = L.map('map').setView([51.505, -0.09], 13);
+
+// Add a tile layer to the map
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Create an elevation plot
+const elevation = L.control.elevation({
+  position: "bottomright",
+  theme: "steelblue-theme",
+  width: 600,
+  height: 200,
+  margins: {
+    top: 10,
+    right: 20,
+    bottom: 30,
+    left: 50
+  },
+  useHeightIndicator: false,
+  interpolate: false
+});
+elevation.addTo(map);
+
+// Load a GPX track and add it to the map
+const gpxUrl = 'path/to/your/gpx-file.gpx'; // Replace with your GPX file URL
+const gpxTrack = new L.GPX(gpxUrl, {
+  async: true
+}).on('loaded', function(e) {
+  map.fitBounds(e.target.getBounds());
+  elevation.loadGPX(e.target);
+});
+
+gpxTrack.addTo(map);
+
+// Create a marker for displaying the current position
+const currentPosMarker = L.marker([0, 0], {
+  icon: L.divIcon({
+    className: 'current-pos-icon',
+    html: '<i class="fas fa-map-marker-alt"></i>', // You can use any HTML content here
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  }),
+  draggable: false
+});
+
+// Update marker position on mouseover
+elevation.on('eledata_hover', function(e) {
+  const latlng = L.latLng(e.data.lat, e.data.lng);
+  currentPosMarker.setLatLng(latlng);
+  if (!map.hasLayer(currentPosMarker)) {
+    currentPosMarker.addTo(map);
+  }
+});
+
+// Remove marker on mouseout
+elevation.on('eledata_clear', function() {
+  if (map.hasLayer(currentPosMarker)) {
+    map.removeLayer(currentPosMarker);
+  }
+});
+This main.js file initializes the map, creates an elevation plot, loads the GPX track, and adds a marker on the map when hovering over the elevation plot. The marker will follow the mouseover on the elevation plot, and it will be removed when the mouse is no longer hovering over the plot.
+
+
+
+
+Regenerate response
+
+<g class="brush" fill="none" pointer-events="all"><rect class="overlay" pointer-events="all" x="0" y="0" width="468" height="232"></rect><rect class="selection" cursor="move" fill="#777" fill-opacity="0.3" stroke="#fff" shape-rendering="crispEdges" style="display: none;"></rect><rect class="handle handle--w" cursor="ew-resize" style="display: none;"></rect><rect class="handle handle--e" cursor="ew-resize" style="display: none;"></rect></g>

@@ -1,0 +1,87 @@
+
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-elevation/1.6.7/Leaflet.Elevation.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-elevation/1.6.7/Leaflet.Elevation.min.js"></script>
+  
+  <style>
+    #map { height: 600px; }
+    #elevation { height: 200px; }
+  </style>
+<div class="container">
+    <p>test: {{ gpx_file_url }}</p>
+  <div id="map"></div>
+  <div id="elevation"></div>
+  <script>
+    // The GPX file path from Django view
+    const gpxUrl = 'https://raw.githubusercontent.com/jhaalbu/hodlekverundt/main/Hodlekve_rundt_2022.gpx'
+  
+    // Initialize the map
+    const map = L.map('map').setView([61.3, 6.97], 13);
+  
+    // Add a tile layer to the map
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+  
+    // Create an elevation plot
+    const elevation = L.control.elevation({
+      position: "bottomright",
+      theme: "steelblue-theme",
+      width: 600,
+      height: 200,
+      margins: {
+        top: 10,
+        right: 20,
+        bottom: 30,
+        left: 50
+      },
+      useHeightIndicator: false,
+      interpolate: false
+    });
+    elevation.addTo(map);
+  
+    // Load a GPX track and add it to the map
+    const gpxTrack = new L.GPX(gpxUrl, {
+      async: true
+    }).on('loaded', function(e) {
+      map.fitBounds(e.target.getBounds());
+      elevation.loadGPX(e.target);
+    });
+  
+    gpxTrack.addTo(map);
+  
+    // Create a marker for displaying the current position
+    const currentPosMarker = L.marker([0, 0], {
+      icon: L.divIcon({
+        className: 'current-pos-icon',
+        html: '<i class="fas fa-map-marker-alt"></i>', // You can use any HTML content here
+        iconSize: [25, 41],
+        iconAnchor: [12, 41]
+      }),
+      draggable: false
+    });
+  
+    // Update marker position on mouseover
+    elevation.on('eledata_hover', function(e) {
+      const latlng = L.latLng(e.data.lat, e.data.lng);
+      currentPosMarker.setLatLng(latlng);
+      if (!map.hasLayer(currentPosMarker)) {
+        currentPosMarker.addTo(map);
+      }
+    });
+  
+    // Remove marker on mouseout
+    elevation.on('eledata_clear', function() {
+      if (map.hasLayer(currentPosMarker)) {
+        map.removeLayer(currentPosMarker);
+      }
+    });
+  </script>
+</div>
+{% endblock %}
